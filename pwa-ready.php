@@ -45,4 +45,4 @@ if ( ! defined( 'PWA_READY_DIR' ) ) {
 }
 
 
-require_once PWA_READY_DIR . '/class-pwa-ready.php';
+require_once PWA_READY_DIR . '/class-service-worker.php';
