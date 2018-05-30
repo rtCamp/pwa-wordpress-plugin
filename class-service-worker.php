@@ -41,9 +41,9 @@ class Service_Worker {
 	 */
 	private function __construct() {
 
-		add_action( 'init', array( $this, 'register_rewrite_rule' ), 99 );
+		add_action( 'init', array( $this, 'register_rewrite_rule' ) );
 		add_filter( 'query_vars', array( $this, 'register_query_vars' ) );
-		add_action( 'template_redirect', array( $this, 'render_service_worker_js' ) );
+		add_action( 'template_redirect', array( $this, 'render_service_worker_js' ), 9 );
 		add_action( 'wp_enqueue_scripts', array( $this, 'load_service_worker' ) );
 	}
 
