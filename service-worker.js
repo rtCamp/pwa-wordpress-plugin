@@ -41,7 +41,9 @@ self.addEventListener('fetch', function (event) {
 
 	if ( shouldCacheRequest( event.request ) ) {
 		if ( isExternalAsset( event.request.url ) ) {
-			event.request.mode = 'no-cors';
+			//@todo Update code
+			//event.request.mode = 'no-cors';
+			return;
 		}
 
 		// @todo Update to workbox alpha version and use workbox class.
@@ -68,7 +70,7 @@ function isExternalAsset( url ) {
 // so it's possible that this should go away - I don't know how expensive cache checks are on most browsers.
 function shouldCacheRequest( request ) {
 	// if the request is for a wp-admin asset, or made from within wp-admin, ignore!
-	if ( admin_regex.test( request.url ) || admin_regex.test( request.referrer ) || request.url === pwa_vars.sw_config_url ) {
+	if ( admin_regex.test( request.url ) || admin_regex.test( request.referrer ) ) {
 		return false;
 	}
 
