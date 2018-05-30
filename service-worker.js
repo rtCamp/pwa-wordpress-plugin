@@ -41,8 +41,7 @@ self.addEventListener('fetch', function (event) {
 	if ( shouldCacheRequest( event.request ) ) {
 		if ( isExternalAsset( event.request.url ) ) {
 			//@todo Update code
-			//event.request.mode = 'no-cors';
-			return;
+			event.request.mode = 'no-cors';
 		}
 
 		// @todo Update to workbox alpha version and use workbox class.
