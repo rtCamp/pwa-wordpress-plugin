@@ -4,7 +4,6 @@ const site_regex = new RegExp( pwa_vars.site_url );
 const cache_ver = pwa_vars.ver ? pwa_vars.ver : 0.1;
 const CACHE_NAME = `pwaready-${cache_ver}`;
 const urlsToCache = [];
-const abc = [];
 
 
 self.addEventListener('install', function(event) {
@@ -70,7 +69,7 @@ function isExternalAsset( url ) {
 // so it's possible that this should go away - I don't know how expensive cache checks are on most browsers.
 function shouldCacheRequest( request ) {
 	// if the request is for a wp-admin asset, or made from within wp-admin, ignore!
-	if ( admin_regex.test( request.url ) || admin_regex.test( request.referrer ) ) {
+	if ( admin_regex.test( request.url ) || admin_regex.test( request.referrer ) || request.url === pwa_vars.sw_config_url ) {
 		return false;
 	}
 

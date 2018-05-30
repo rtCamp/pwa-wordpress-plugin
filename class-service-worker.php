@@ -78,10 +78,11 @@ class Service_Worker {
 
 			// fake localize - service worker is not loaded in page context, so regular localize doesn't work.
 			$pwa_vars = array(
-				'admin_url' => admin_url(),
-				'site_url'  => site_url(),
-				'ver'       => PWA_READY_VERSION,
-				'precache'  => [],
+				'admin_url'     => admin_url(),
+				'site_url'      => site_url(),
+				'sw_config_url' => site_url( '/sw.js/' ),
+				'ver'           => PWA_READY_VERSION,
+				'precache'      => [],
 			);
 
 			$pwa_vars = apply_filters( 'pwa_ready_localize_data', $pwa_vars );
