@@ -4,23 +4,25 @@ const site_regex = new RegExp( pwa_vars.site_url );
 const cache_ver = pwa_vars.ver ? pwa_vars.ver : 0.1;
 const CACHE_NAME = `pwaready-${cache_ver}`;
 const urlsToCache = [];
+const abc = [];
 
 
-self.addEventListener('install', event => {
+self.addEventListener('install', function(event) {
 	console.log('[SW] Install');
 	// Perform install steps
 	// Pre cache urls
 	self.skipWaiting();
 	return event.waitUntil(
-		caches.open(CACHE_NAME).then(cache =>
-			cache.addAll(urlsToCache).then(() => {
+		caches.open(CACHE_NAME).then(function(cache) {
+			return cache.addAll(urlsToCache).then(() => {
 				console.log('Worker Install Complete');
 			})
-		)
+		})
 	);
 });
 
 self.addEventListener('activate', function(event) {
+	console.log('[SW] Activate');
 	event.waitUntil(
 		caches.keys().then(function(cacheNames) {
 			return Promise.all(
