@@ -44,7 +44,7 @@ self.addEventListener('fetch', function (event) {
 
 		// @todo Update to workbox alpha version and use workbox class.
 		event.respondWith(
-			caches.open( CACHE_NAME ).then(function(cache) {
+			caches.open(CACHE_NAME).then(function(cache) {
 				return cache.match(event.request).then(function(response) {
 					var fetchPromise = fetch(event.request).then(function(networkResponse) {
 						cache.put(event.request, networkResponse.clone());
