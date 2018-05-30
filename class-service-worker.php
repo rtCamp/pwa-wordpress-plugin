@@ -43,6 +43,7 @@ class Service_Worker {
 
 		add_action( 'init', array( $this, 'register_rewrite_rule' ) );
 		add_filter( 'query_vars', array( $this, 'register_query_vars' ) );
+		// priority 9 is set to stop canonical redirect.
 		add_action( 'template_redirect', array( $this, 'render_service_worker_js' ), 9 );
 		add_action( 'wp_enqueue_scripts', array( $this, 'load_service_worker' ) );
 	}
