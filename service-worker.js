@@ -75,8 +75,6 @@ function shouldCacheRequest( request ) {
 		return false;
 	}
 
-	// @todo check for customizer request
-
 	if ( request.method !== 'GET' ) {
 		return false;
 	}
