@@ -41,7 +41,7 @@ class Service_Worker {
 	 */
 	private function __construct() {
 
-		add_action( 'init', array( $this, 'register_rewrite_rule' ) );
+		add_action( 'init', array( $this, 'register_rewrite_rule' ), 99 );
 		add_filter( 'query_vars', array( $this, 'register_query_vars' ) );
 		add_action( 'template_redirect', array( $this, 'render_service_worker_js' ) );
 		add_action( 'wp_enqueue_scripts', array( $this, 'load_service_worker' ) );
@@ -80,7 +80,7 @@ class Service_Worker {
 			$pwa_vars = array(
 				'admin_url'     => admin_url(),
 				'site_url'      => site_url(),
-				'sw_config_url' => site_url( '/sw.js/' ),
+				'sw_config_url' => site_url( '/sw.js' ),
 				'ver'           => PWA_READY_VERSION,
 				'precache'      => [],
 			);
@@ -88,7 +88,7 @@ class Service_Worker {
 			$pwa_vars = apply_filters( 'pwa_ready_localize_data', $pwa_vars );
 
 			echo preg_replace( '/pwa_vars_json/', json_encode( $pwa_vars ), file_get_contents( PWA_READY_DIR . '/service-worker.js' ) ); // @codingStandardsIgnoreLine.
-			exit;
+			die;
 		}
 	}
 
