@@ -50,6 +50,9 @@ self.addEventListener('fetch', function (event) {
 			caches.open(CACHE_NAME).then(function(cache) {
 				return cache.match(event.request).then(function(response) {
 					var fetchPromise = fetch(event.request).then(function(networkResponse) {
+						if (!networkResponse || networkResponse.status !== 200 || networkResponse.type !== 'basic') {
+							return networkResponse;
+						}
 						cache.put(event.request, networkResponse.clone());
 						return networkResponse;
 					});
