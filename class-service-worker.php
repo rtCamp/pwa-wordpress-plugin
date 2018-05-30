@@ -44,7 +44,7 @@ class Service_Worker {
 		add_action( 'init', array( $this, 'register_rewrite_rule' ) );
 		add_filter( 'query_vars', array( $this, 'register_query_vars' ) );
 		add_action( 'template_redirect', array( $this, 'render_service_worker_js' ) );
-		add_action( 'wp_footer', array( $this, 'load_service_worker' ) );
+		add_action( 'wp_enqueue_scripts', array( $this, 'load_service_worker' ) );
 	}
 
 	/**
@@ -95,19 +95,7 @@ class Service_Worker {
 	 * Load service worker on client.
 	 */
 	public function load_service_worker() {
-		?>
-		<script type="text/javascript">
-			if ('serviceWorker' in navigator) {
-				window.addEventListener( 'load', function() {
-					navigator.serviceWorker.register( '/sw.js' ).then( function ( registration  ) {
-						console.log( 'Service worker registered' );
-					}).catch( function( registrationError ) {
-						console.log( 'Service worker registration failed' );
-					});
-				});
-			}
-		</script>
-		<?php
+		wp_enqueue_script( 'pwa-ready-sw', sprintf( '%s/js/main.js', untrailingslashit( PWA_READY_DIR_URL ) ), [], PWA_READY_VERSION, true );
 	}
 }
 
