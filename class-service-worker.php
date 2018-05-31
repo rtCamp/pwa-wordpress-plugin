@@ -9,6 +9,10 @@ if ( ! defined( 'PWA_READY_QUERY_VAR' ) ) {
 	define( 'PWA_READY_QUERY_VAR', 'pwa_ready_sw' );
 }
 
+if ( ! defined( 'PWA_READY_MANIFEST' ) ) {
+	define( 'PWA_READY_MANIFEST', 'pwa_ready_manifest' );
+}
+
 /**
  * Class Service_Worker
  */
@@ -45,6 +49,7 @@ class Service_Worker {
 		add_filter( 'query_vars', array( $this, 'register_query_vars' ) );
 		// priority 9 is set to stop canonical redirect.
 		add_action( 'template_redirect', array( $this, 'render_service_worker_js' ), 9 );
+		add_action( 'template_redirect', array( $this, 'render_manifest' ), 2 );
 		add_action( 'wp_enqueue_scripts', array( $this, 'load_service_worker' ) );
 	}
 
@@ -53,6 +58,7 @@ class Service_Worker {
 	 */
 	public function register_rewrite_rule() {
 		add_rewrite_rule( '^sw.js$', 'index.php?' . PWA_READY_QUERY_VAR . '=1', 'top' );
+		add_rewrite_rule( '^theme-manifest.json$', 'index.php?' . PWA_READY_MANIFEST . '=1', 'top' );
 	}
 
 	/**
@@ -64,6 +70,7 @@ class Service_Worker {
 	 */
 	public function register_query_vars( $vars ) {
 		$vars[] = PWA_READY_QUERY_VAR;
+		$vars[] = PWA_READY_MANIFEST;
 		return $vars;
 	}
 
@@ -94,10 +101,79 @@ class Service_Worker {
 	}
 
 	/**
+	 * Render manifest file for theme
+	 */
+	public function pwa_theme_render_custom_assets() {
+
+		global $wp_query;
+
+		if ( $wp_query->get( PWA_READY_MANIFEST ) ) {
+
+			$theme_color = $this->pwa_ready_manifest_theme_color();
+
+			$manifest = array(
+				'start_url'        => get_bloginfo( 'url' ),
+				'short_name'       => get_bloginfo( 'name' ),
+				'name'             => get_bloginfo( 'name' ),
+				'display'          => 'standalone',
+				'background_color' => $theme_color,
+				'theme_color'      => $theme_color,
+			);
+
+			$manifest['icons'] = array(
+				array(
+					'src'   => $this->pwa_ready_manifest_icon_url( 48 ),
+					'sizes' => '48x48',
+				),
+				array(
+					'src'   => $this->pwa_ready_manifest_icon_url( 192 ),
+					'sizes' => '192x192',
+				),
+				array(
+					'src'   => $this->pwa_ready_manifest_icon_url( 512 ),
+					'sizes' => '512x512',
+				),
+			);
+
+			wp_send_json( $manifest );
+		}
+	}
+
+	/**
 	 * Load service worker on client.
 	 */
 	public function load_service_worker() {
 		wp_enqueue_script( 'pwa-ready-sw', sprintf( '%s/js/main.js', untrailingslashit( PWA_READY_DIR_URL ) ), [], PWA_READY_VERSION, true );
+	}
+
+	/**
+	 * Get theme color for manifest.
+	 *
+	 * @return mixed
+	 */
+	public function pwa_ready_manifest_theme_color() {
+
+		if ( current_theme_supports( 'custom-background' ) ) {
+			$theme_color = get_theme_support( 'custom-background' )->{'default-color'};
+		} else {
+			$theme_color = '#FFF';
+		}
+
+		return apply_filters( 'pwa_ready_theme_get_theme_color', $theme_color );
+	}
+
+	/**
+	 * Get site icon url.
+	 *
+	 * @param string $size Image size.
+	 *
+	 * @return string
+	 */
+	public function pwa_ready_manifest_icon_url( $size ) {
+
+		$path = sprintf( '%1$s/images/icons/icon-%2$sx$2$s.png', PWA_READY_DIR_URL );
+		$path = apply_filters( 'pwa_ready_manifest_icon_url', $path, $size );
+		return $path;
 	}
 }
 
