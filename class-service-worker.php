@@ -2,7 +2,7 @@
 /**
  * Service Worker Related functions
  *
- * @package PWA_WP
+ * @package PWA_WP_Plugin
  */
 
 namespace PWA_WP_Plugin\Service_Worker;

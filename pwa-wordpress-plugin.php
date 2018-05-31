@@ -8,7 +8,7 @@
  * License: GPLv2 or later
  * Text Domain: pwa-wp-plugin
  *
- * @package PWA_WP
+ * @package PWA_WP_Plugin
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
