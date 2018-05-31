@@ -48,13 +48,14 @@ self.addEventListener('fetch', function (event) {
 		event.respondWith(
 			caches.open(CACHE_NAME).then(function(cache) {
 				return cache.match(event.request).then(function(response) {
+
+					if ('only-if-cached' === event.request.cache && 'same-origin' !== event.request.mode) {
+						return;
+					}
+
 					var fetchPromise = fetch(event.request).then(function(networkResponse) {
 						if (!networkResponse || 200 !==networkResponse.status || 'basic' !== networkResponse.type) {
 							return networkResponse;
-						}
-
-						if ('only-if-cached' === event.request.cache && 'same-origin' !== event.request.mode) {
-							return;
 						}
 
 						cache.put(event.request, networkResponse.clone());

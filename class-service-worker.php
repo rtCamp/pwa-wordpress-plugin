@@ -166,9 +166,9 @@ class Service_Worker {
 	public function pwa_ready_manifest_theme_color() {
 		if ( current_theme_supports( 'custom-background' ) ) {
 			$theme_color = get_theme_support( 'custom-background' );
-			$theme_color = empty( $theme_color[0]['default-color'] ) ? '#FFF' : $theme_color[0]['default-color'];
+			$theme_color = empty( $theme_color[0]['default-color'] ) ? '#ffffff' : $theme_color[0]['default-color'];
 		} else {
-			$theme_color = '#FFF';
+			$theme_color = '#ffffff';
 		}
 
 		return apply_filters( 'pwa_ready_theme_get_theme_color', $theme_color );
