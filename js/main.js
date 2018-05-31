@@ -16,7 +16,7 @@ var pwa_ready =  {
 			e.prompt();
 			e.userChoice
 				.then((choiceResult) => {
-					if (choiceResult.outcome === 'accepted') {
+					if ('accepted' === choiceResult.outcome) {
 						console.log('User accepted the A2HS prompt');
 					} else {
 						console.log('User dismissed the A2HS prompt');
