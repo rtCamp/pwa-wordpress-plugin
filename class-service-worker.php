@@ -5,8 +5,8 @@
  * @package Pwa_Ready
  */
 
-if ( ! defined( 'PWA_READY_QUERY_VAR' ) ) {
-	define( 'PWA_READY_QUERY_VAR', 'pwa_ready_sw' );
+if ( ! defined( 'PWA_READY_SW' ) ) {
+	define( 'PWA_READY_SW', 'pwa_ready_sw' );
 }
 
 if ( ! defined( 'PWA_READY_MANIFEST' ) ) {
@@ -51,14 +51,14 @@ class Service_Worker {
 		add_action( 'template_redirect', array( $this, 'render_service_worker_js' ), 9 );
 		add_action( 'template_redirect', array( $this, 'render_manifest' ), 9 );
 		add_action( 'wp_enqueue_scripts', array( $this, 'load_service_worker' ) );
-		add_action( 'wp_head', array( $this, 'link_manifest' ) );
+		add_action( 'wp_head', array( $this, 'add_link_meta' ) );
 	}
 
 	/**
 	 * Function will add rewrite rule to create virtual service worker file.
 	 */
 	public function register_rewrite_rule() {
-		add_rewrite_rule( '^sw.js$', 'index.php?' . PWA_READY_QUERY_VAR . '=1', 'top' );
+		add_rewrite_rule( '^sw.js$', 'index.php?' . PWA_READY_SW . '=1', 'top' );
 		add_rewrite_rule( '^theme-manifest.json$', 'index.php?' . PWA_READY_MANIFEST . '=1', 'top' );
 	}
 
@@ -70,7 +70,7 @@ class Service_Worker {
 	 * @return array
 	 */
 	public function register_query_vars( $vars ) {
-		$vars[] = PWA_READY_QUERY_VAR;
+		$vars[] = PWA_READY_SW;
 		$vars[] = PWA_READY_MANIFEST;
 		return $vars;
 	}
@@ -81,7 +81,7 @@ class Service_Worker {
 	public function render_service_worker_js() {
 		global $wp_query;
 
-		if ( $wp_query->get( PWA_READY_QUERY_VAR ) ) {
+		if ( $wp_query->get( PWA_READY_SW ) ) {
 
 			header( 'Content-Type: application/javascript; charset=utf-8' );
 
@@ -145,7 +145,7 @@ class Service_Worker {
 	/**
 	 * Add manifest file in header of theme,
 	 */
-	public function link_manifest() {
+	public function add_link_meta() {
 		?>
 		<meta name="theme-color" content="<?php echo sanitize_hex_color( $this->pwa_ready_manifest_theme_color() ); ?>" />
 		<link rel="manifest" href="<?php echo esc_url( site_url( '/theme-manifest.json' ) ); ?>">
