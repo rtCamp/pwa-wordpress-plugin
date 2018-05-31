@@ -110,7 +110,7 @@ class Service_Worker {
 
 		if ( $wp_query->get( PWA_READY_MANIFEST ) ) {
 
-			$theme_color = $this->pwa_ready_manifest_theme_color();
+			$theme_color = sanitize_hex_color( $this->pwa_ready_manifest_theme_color() );
 
 			$manifest = array(
 				'start_url'        => get_bloginfo( 'url' ),
@@ -164,13 +164,7 @@ class Service_Worker {
 	 * @return mixed
 	 */
 	public function pwa_ready_manifest_theme_color() {
-		if ( current_theme_supports( 'custom-background' ) ) {
-			$theme_color = get_theme_support( 'custom-background' );
-			$theme_color = empty( $theme_color[0]['default-color'] ) ? '#ffffff' : $theme_color[0]['default-color'];
-		} else {
-			$theme_color = '#ffffff';
-		}
-
+		$theme_color = '#ffffff';
 		return apply_filters( 'pwa_ready_theme_get_theme_color', $theme_color );
 	}
 
