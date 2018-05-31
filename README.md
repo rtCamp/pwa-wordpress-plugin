@@ -1,4 +1,8 @@
-# pwa-wordpress-plugin
-WordPress Plugin to enable PWA features. 
+<p align="center">
+<a href="https://rtcamp.com" target="_blank"><img width="200"src="https://rtcamp.com/wp-content/uploads/2016/06/rtcamp-logo.svg"></a>
+</p>
 
-Work in Progress..
+# PWA WordPress Plugin
+WordPress Plugin to enable PWA features.
+
+In Progress.
