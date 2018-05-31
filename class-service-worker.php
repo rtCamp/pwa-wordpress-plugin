@@ -49,8 +49,9 @@ class Service_Worker {
 		add_filter( 'query_vars', array( $this, 'register_query_vars' ) );
 		// priority 9 is set to stop canonical redirect.
 		add_action( 'template_redirect', array( $this, 'render_service_worker_js' ), 9 );
-		add_action( 'template_redirect', array( $this, 'render_manifest' ), 2 );
+		add_action( 'template_redirect', array( $this, 'render_manifest' ), 9 );
 		add_action( 'wp_enqueue_scripts', array( $this, 'load_service_worker' ) );
+		add_action( 'wp_head', array( $this, 'link_manifest' ) );
 	}
 
 	/**
@@ -103,7 +104,7 @@ class Service_Worker {
 	/**
 	 * Render manifest file for theme
 	 */
-	public function pwa_theme_render_custom_assets() {
+	public function render_manifest() {
 
 		global $wp_query;
 
@@ -122,7 +123,7 @@ class Service_Worker {
 
 			$manifest['icons'] = array(
 				array(
-					'src'   => $this->pwa_ready_manifest_icon_url( 48 ),
+					'src'   => $this->pwa_ready_manifest_icon_url( 72 ),
 					'sizes' => '48x48',
 				),
 				array(
@@ -135,8 +136,19 @@ class Service_Worker {
 				),
 			);
 
+			$manifest = apply_filters( 'pwa_ready_manifest', $manifest );
+
 			wp_send_json( $manifest );
 		}
+	}
+
+	/**
+	 * Add manifest file in header of theme,
+	 */
+	public function link_manifest() {
+		?>
+		<link rel="manifest" href="<?php echo esc_url( site_url( '/theme-manifest.json' ) ); ?>">
+		<?php
 	}
 
 	/**
@@ -152,9 +164,9 @@ class Service_Worker {
 	 * @return mixed
 	 */
 	public function pwa_ready_manifest_theme_color() {
-
 		if ( current_theme_supports( 'custom-background' ) ) {
-			$theme_color = get_theme_support( 'custom-background' )->{'default-color'};
+			$theme_color = get_theme_support( 'custom-background' );
+			$theme_color = empty( $theme_color[0]['default-color'] ) ? '#FFF' : $theme_color[0]['default-color'];
 		} else {
 			$theme_color = '#FFF';
 		}
@@ -171,7 +183,7 @@ class Service_Worker {
 	 */
 	public function pwa_ready_manifest_icon_url( $size ) {
 
-		$path = sprintf( '%1$s/images/icons/icon-%2$sx$2$s.png', PWA_READY_DIR_URL );
+		$path = sprintf( '%1$s/images/icons/icon-%2$sx%2$s.png', untrailingslashit( PWA_READY_DIR_URL ), $size );
 		$path = apply_filters( 'pwa_ready_manifest_icon_url', $path, $size );
 		return $path;
 	}
