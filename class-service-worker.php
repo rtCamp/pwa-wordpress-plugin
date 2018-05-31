@@ -147,6 +147,7 @@ class Service_Worker {
 	 */
 	public function link_manifest() {
 		?>
+		<meta name="theme-color" content="<?php echo sanitize_hex_color( $this->pwa_ready_manifest_theme_color() ); ?>" />
 		<link rel="manifest" href="<?php echo esc_url( site_url( '/theme-manifest.json' ) ); ?>">
 		<?php
 	}
