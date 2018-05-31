@@ -181,7 +181,7 @@ class Service_Worker {
 	 */
 	public function get_manifest_icon_url( $size ) {
 
-		$path = sprintf( '%1$s/images/icons/icon-%2$sx%2$s.png', untrailingslashit( PWA_WP_PLUGIN_DIR ), $size );
+		$path = sprintf( '%1$s/images/icons/icon-%2$sx%2$s.png', untrailingslashit( PWA_WP_PLUGIN_DIR_URL ), $size );
 		$path = apply_filters( 'pwa_wp_plugin_manifest_icon_url', $path, $size );
 		return $path;
 	}
