@@ -1,6 +1,6 @@
 <?php
 /**
- * Plugin Name:PWA WordPress Plugin.
+ * Plugin Name:PWA WordPress Plugin
  * Description: WordPress Plugin to enable PWA features.
  * Author: rtCamp, Sagar Bhatt
  * Author URI: https://rtcamp.com/
