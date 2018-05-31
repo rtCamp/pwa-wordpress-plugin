@@ -2,15 +2,17 @@
 /**
  * Service Worker Related functions
  *
- * @package Pwa_Ready
+ * @package PWA_WP_Plugin
  */
 
-if ( ! defined( 'PWA_READY_SW' ) ) {
-	define( 'PWA_READY_SW', 'pwa_ready_sw' );
+namespace PWA_WP_Plugin\Service_Worker;
+
+if ( ! defined( 'PWA_WP_PLUGIN_SW' ) ) {
+	define( 'PWA_WP_PLUGIN_SW', 'pwa_wp_plugin_sw' );
 }
 
-if ( ! defined( 'PWA_READY_MANIFEST' ) ) {
-	define( 'PWA_READY_MANIFEST', 'pwa_ready_manifest' );
+if ( ! defined( 'PWA_WP_PLUGIN_MANIFEST' ) ) {
+	define( 'PWA_WP_PLUGIN_MANIFEST', 'pwa_wp_plugin_manifest' );
 }
 
 /**
@@ -47,6 +49,7 @@ class Service_Worker {
 
 		add_action( 'init', array( $this, 'register_rewrite_rule' ) );
 		add_filter( 'query_vars', array( $this, 'register_query_vars' ) );
+
 		// priority 9 is set to stop canonical redirect.
 		add_action( 'template_redirect', array( $this, 'render_service_worker_js' ), 9 );
 		add_action( 'template_redirect', array( $this, 'render_manifest' ), 9 );
@@ -58,8 +61,8 @@ class Service_Worker {
 	 * Function will add rewrite rule to create virtual service worker file.
 	 */
 	public function register_rewrite_rule() {
-		add_rewrite_rule( '^sw.js$', 'index.php?' . PWA_READY_SW . '=1', 'top' );
-		add_rewrite_rule( '^theme-manifest.json$', 'index.php?' . PWA_READY_MANIFEST . '=1', 'top' );
+		add_rewrite_rule( '^sw.js$', 'index.php?' . PWA_WP_PLUGIN_SW . '=1', 'top' );
+		add_rewrite_rule( '^theme-manifest.json$', 'index.php?' . PWA_WP_PLUGIN_MANIFEST . '=1', 'top' );
 	}
 
 	/**
@@ -70,8 +73,8 @@ class Service_Worker {
 	 * @return array
 	 */
 	public function register_query_vars( $vars ) {
-		$vars[] = PWA_READY_SW;
-		$vars[] = PWA_READY_MANIFEST;
+		$vars[] = PWA_WP_PLUGIN_SW;
+		$vars[] = PWA_WP_PLUGIN_MANIFEST;
 		return $vars;
 	}
 
@@ -81,7 +84,7 @@ class Service_Worker {
 	public function render_service_worker_js() {
 		global $wp_query;
 
-		if ( $wp_query->get( PWA_READY_SW ) ) {
+		if ( $wp_query->get( PWA_WP_PLUGIN_SW ) ) {
 
 			header( 'Content-Type: application/javascript; charset=utf-8' );
 
@@ -90,13 +93,13 @@ class Service_Worker {
 				'admin_url'     => admin_url(),
 				'site_url'      => site_url(),
 				'sw_config_url' => site_url( '/sw.js' ),
-				'ver'           => PWA_READY_VERSION,
+				'ver'           => PWA_WP_PLUGIN_VERSION,
 				'precache'      => [],
 			);
 
 			$pwa_vars = apply_filters( 'pwa_ready_localize_data', $pwa_vars );
 
-			echo preg_replace( '/pwa_vars_json/', json_encode( $pwa_vars ), file_get_contents( PWA_READY_DIR . '/service-worker.js' ) ); // @codingStandardsIgnoreLine.
+			echo preg_replace( '/pwa_vars_json/', json_encode( $pwa_vars ), file_get_contents( PWA_WP_PLUGIN_DIR . '/service-worker.js' ) ); // @codingStandardsIgnoreLine.
 			die;
 		}
 	}
@@ -108,9 +111,9 @@ class Service_Worker {
 
 		global $wp_query;
 
-		if ( $wp_query->get( PWA_READY_MANIFEST ) ) {
+		if ( $wp_query->get( PWA_WP_PLUGIN_MANIFEST ) ) {
 
-			$theme_color = sanitize_hex_color( $this->pwa_ready_manifest_theme_color() );
+			$theme_color = sanitize_hex_color( $this->get_manifest_theme_color() );
 
 			$manifest = array(
 				'start_url'        => get_bloginfo( 'url' ),
@@ -123,15 +126,15 @@ class Service_Worker {
 
 			$manifest['icons'] = array(
 				array(
-					'src'   => $this->pwa_ready_manifest_icon_url( 72 ),
+					'src'   => $this->get_manifest_icon_url( 72 ),
 					'sizes' => '48x48',
 				),
 				array(
-					'src'   => $this->pwa_ready_manifest_icon_url( 192 ),
+					'src'   => $this->get_manifest_icon_url( 192 ),
 					'sizes' => '192x192',
 				),
 				array(
-					'src'   => $this->pwa_ready_manifest_icon_url( 512 ),
+					'src'   => $this->get_manifest_icon_url( 512 ),
 					'sizes' => '512x512',
 				),
 			);
@@ -147,7 +150,7 @@ class Service_Worker {
 	 */
 	public function add_link_meta() {
 		?>
-		<meta name="theme-color" content="<?php echo sanitize_hex_color( $this->pwa_ready_manifest_theme_color() ); ?>" />
+		<meta name="theme-color" content="<?php echo sanitize_hex_color( $this->get_manifest_theme_color() ); // @codingStandardsIgnoreLine. ?>" />
 		<link rel="manifest" href="<?php echo esc_url( site_url( '/theme-manifest.json' ) ); ?>">
 		<?php
 	}
@@ -156,7 +159,7 @@ class Service_Worker {
 	 * Load service worker on client.
 	 */
 	public function load_service_worker() {
-		wp_enqueue_script( 'pwa-ready-sw', sprintf( '%s/js/main.js', untrailingslashit( PWA_READY_DIR_URL ) ), [], PWA_READY_VERSION, true );
+		wp_enqueue_script( 'pwa-wp-plugin-sw', sprintf( '%s/js/main.js', untrailingslashit( PWA_WP_PLUGIN_DIR_URL ) ), [], PWA_WP_PLUGIN_VERSION, true );
 	}
 
 	/**
@@ -164,9 +167,9 @@ class Service_Worker {
 	 *
 	 * @return mixed
 	 */
-	public function pwa_ready_manifest_theme_color() {
+	public function get_manifest_theme_color() {
 		$theme_color = '#ffffff';
-		return apply_filters( 'pwa_ready_theme_get_theme_color', $theme_color );
+		return apply_filters( 'pwa_wp_plugin_get_theme_color', $theme_color );
 	}
 
 	/**
@@ -176,10 +179,10 @@ class Service_Worker {
 	 *
 	 * @return string
 	 */
-	public function pwa_ready_manifest_icon_url( $size ) {
+	public function get_manifest_icon_url( $size ) {
 
-		$path = sprintf( '%1$s/images/icons/icon-%2$sx%2$s.png', untrailingslashit( PWA_READY_DIR_URL ), $size );
-		$path = apply_filters( 'pwa_ready_manifest_icon_url', $path, $size );
+		$path = sprintf( '%1$s/images/icons/icon-%2$sx%2$s.png', untrailingslashit( PWA_WP_PLUGIN_DIR_URL ), $size );
+		$path = apply_filters( 'pwa_wp_plugin_manifest_icon_url', $path, $size );
 		return $path;
 	}
 }
