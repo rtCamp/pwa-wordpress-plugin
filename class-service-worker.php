@@ -151,7 +151,7 @@ class Service_Worker {
 	public function add_link_meta() {
 		?>
 		<meta name="theme-color" content="<?php echo sanitize_hex_color( $this->get_manifest_theme_color() ); // @codingStandardsIgnoreLine. ?>" />
-		<link rel="manifest" href="<?php echo esc_url( site_url( '/theme-manifest.json' ) ); ?>">
+		<link rel="manifest" href="<?php echo esc_url( $this->get_manifest_url() ); ?>">
 		<?php
 	}
 
@@ -170,6 +170,14 @@ class Service_Worker {
 	public function get_manifest_theme_color() {
 		$theme_color = '#ffffff';
 		return apply_filters( 'pwa_wp_plugin_get_theme_color', $theme_color );
+	}
+
+	/**
+	 * Get manifest url.
+	 */
+	public function get_manifest_url() {
+
+		return add_query_arg( PWA_WP_PLUGIN_MANIFEST, '1', site_url() );
 	}
 
 	/**
