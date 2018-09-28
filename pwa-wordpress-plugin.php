@@ -2,11 +2,11 @@
 /**
  * Plugin Name:PWA WordPress Plugin
  * Description: WordPress Plugin to enable PWA features.
- * Author: rtCamp, Sagar Bhatt
+ * Author: rtCamp, Sagar Bhatt, Manish
  * Author URI: https://rtcamp.com/
  * Version: 0.1
  * License: GPLv2 or later
- * Text Domain: pwa-wp-plugin
+ * Text Domain: pwa-wordpress-plugin
  *
  * @package PWA_WP_Plugin
  */

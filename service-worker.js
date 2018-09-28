@@ -5,38 +5,32 @@ const cache_ver = pwa_vars.ver ? pwa_vars.ver : 0.1;
 const CACHE_NAME = `pwaready-${cache_ver}`;
 const urlsToCache = [];
 
+self.addEventListener( 'install', function ( event ) {
+	console.log( '[SW] Install' );
 
-self.addEventListener('install', function(event) {
-	console.log('[SW] Install');
 	// Perform install steps
 	// Pre cache urls
 	self.skipWaiting();
-	return event.waitUntil(
-		caches.open(CACHE_NAME).then(function(cache) {
-			return cache.addAll(urlsToCache).then(() => {
-				console.log('Worker Install Complete');
-			})
-		})
-	);
-});
+	return event.waitUntil( caches.open( CACHE_NAME ).then( function ( cache ) {
+		return cache.addAll( urlsToCache ).then( () => {
+			console.log( 'Worker Install Complete' );
+		} )
+	} ) );
+} );
 
-self.addEventListener('activate', function(event) {
-	console.log('[SW] Activate');
-	event.waitUntil(
-		caches.keys().then(function(cacheNames) {
-			return Promise.all(
-				cacheNames.map(function(cacheName) {
-					return caches.delete(cacheName);
-				})
-			)
-		}).then(function() {
-			return self.clients.claim();
-		})
-	);
-});
+self.addEventListener( 'activate', function ( event ) {
+	console.log( '[SW] Activate' );
+	event.waitUntil( caches.keys().then( function ( cacheNames ) {
+		return Promise.all( cacheNames.map( function ( cacheName ) {
+			return caches.delete( cacheName );
+		} ) )
+	} ).then( function () {
+		return self.clients.claim();
+	} ) );
+} );
 
 // On fetch, try the cache but if there's a miss try loading the content
-self.addEventListener('fetch', function (event) {
+self.addEventListener( 'fetch', function ( event ) {
 
 	if ( shouldCacheRequest( event.request ) ) {
 		if ( isExternalAsset( event.request.url ) ) {
@@ -45,31 +39,29 @@ self.addEventListener('fetch', function (event) {
 		}
 
 		// @todo Update to workbox alpha version and use workbox class.
-		event.respondWith(
-			caches.open(CACHE_NAME).then(function(cache) {
-				return cache.match(event.request).then(function(response) {
+		event.respondWith( caches.open( CACHE_NAME ).then( function ( cache ) {
+			return cache.match( event.request ).then( function ( response ) {
 
-					if ('only-if-cached' === event.request.cache && 'same-origin' !== event.request.mode) {
-						return;
+				if ( 'only-if-cached' === event.request.cache && 'same-origin' !== event.request.mode ) {
+					return;
+				}
+
+				var fetchPromise = fetch( event.request ).then( function ( networkResponse ) {
+					if ( !networkResponse || 200 !== networkResponse.status || 'basic' !== networkResponse.type ) {
+						return networkResponse;
 					}
 
-					var fetchPromise = fetch(event.request).then(function(networkResponse) {
-						if (!networkResponse || 200 !==networkResponse.status || 'basic' !== networkResponse.type) {
-							return networkResponse;
-						}
-
-						cache.put(event.request, networkResponse.clone());
-						return networkResponse;
-					});
-					return response || fetchPromise;
-				})
-			})
-		);
+					cache.put( event.request, networkResponse.clone() );
+					return networkResponse;
+				} );
+				return response || fetchPromise;
+			} )
+		} ) );
 	}
-});
+} );
 
 function isExternalAsset( url ) {
-	return ! site_regex.test( url ) && ! url.match(/^\/[^\/]/);
+	return ! site_regex.test( url ) && ! url.match( /^\/[^\/]/ );
 }
 
 // having this function allows us to shortcut checking the cache,
@@ -86,9 +78,9 @@ function shouldCacheRequest( request ) {
 	}
 
 	// get file extension using awful hackery, since we don't know response mime type before fetching
-	var extension = request.url.split(/\#|\?/)[0].split('/').pop().split('.').pop();
+	var extension = request.url.split( /\#|\?/ )[0].split( '/' ).pop().split( '.' ).pop();
 
-	if ( extension.length > 0 && ! ['js', 'css', 'html', 'woff2', 'jpg', 'png'].includes( extension ) ) {
+	if ( extension.length > 0 && !['js', 'css', 'html', 'woff2', 'jpg', 'png'].includes( extension ) ) {
 		return false;
 	}
 
