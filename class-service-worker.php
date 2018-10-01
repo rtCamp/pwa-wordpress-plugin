@@ -114,6 +114,54 @@ class Service_Worker {
 		);
 
 		$wp_customize->add_setting(
+			'pwa_name',
+			array(
+				'type'       => 'theme_mod',
+				'capability' => 'edit_theme_options',
+				'default'    => get_bloginfo( 'name' ),
+			)
+		);
+
+		$wp_customize->add_control( 'pwa_name', array(
+			'label'    => __( 'Name', 'pwa-wordpress-plugin' ),
+			'settings' => 'pwa_name',
+			'section'  => 'pwa_options',
+			'type'     => 'text',
+		) );
+
+		$wp_customize->add_setting(
+			'pwa_short_name',
+			array(
+				'type'       => 'theme_mod',
+				'capability' => 'edit_theme_options',
+				'default'    => get_bloginfo( 'name' ),
+			)
+		);
+
+		$wp_customize->add_control( 'pwa_short_name', array(
+			'label'    => __( 'Short Name', 'pwa-wordpress-plugin' ),
+			'settings' => 'pwa_short_name',
+			'section'  => 'pwa_options',
+			'type'     => 'text',
+		) );
+
+		$wp_customize->add_setting(
+			'pwa_description',
+			array(
+				'type'       => 'theme_mod',
+				'capability' => 'edit_theme_options',
+				'default'    => get_bloginfo( 'description' ),
+			)
+		);
+
+		$wp_customize->add_control( 'pwa_description', array(
+			'label'    => __( 'Description', 'pwa-wordpress-plugin' ),
+			'settings' => 'pwa_description',
+			'section'  => 'pwa_options',
+			'type'     => 'text',
+		) );
+
+		$wp_customize->add_setting(
 			'pwa_theme_color',
 			array(
 				'type'       => 'theme_mod',
@@ -125,7 +173,7 @@ class Service_Worker {
 		$wp_customize->add_control(
 			new \WP_Customize_Color_Control(
 				$wp_customize,
-				'pwa_control_theme_color',
+				'pwa_theme_color',
 				array(
 					'label'    => __( 'Theme Color', 'pwa-wordpress-plugin' ),
 					'settings' => 'pwa_theme_color',
@@ -147,7 +195,7 @@ class Service_Worker {
 		$wp_customize->add_control(
 			new \WP_Customize_Color_Control(
 				$wp_customize,
-				'pwa_control_background_color',
+				'pwa_background_color',
 				array(
 					'label'    => __( 'Background Color', 'pwa-wordpress-plugin' ),
 					'settings' => 'pwa_background_color',
@@ -227,10 +275,11 @@ class Service_Worker {
 
 			$manifest = array(
 				'background_color' => $background_color,
-				'description'      => get_bloginfo( 'description' ),
+				'description'      => sanitize_text_field( get_theme_mod( 'pwa_description', get_bloginfo( 'description' ) ) ),
 				'display'          => 'standalone',
-				'name'             => get_bloginfo( 'name' ),
-				'short_name'       => get_bloginfo( 'name' ),
+				'lang'             => get_bloginfo( 'language' ),
+				'name'             => sanitize_text_field( get_theme_mod( 'pwa_name', get_bloginfo( 'name' ) ) ),
+				'short_name'       => sanitize_text_field( get_theme_mod( 'pwa_short_name', get_bloginfo( 'name' ) ) ),
 				'start_url'        => get_bloginfo( 'url' ),
 				'theme_color'      => $theme_color,
 			);
