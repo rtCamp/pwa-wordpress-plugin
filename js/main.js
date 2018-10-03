@@ -1,29 +1,29 @@
-var pwa_ready =  {
+var pwa_ready = {
 
-	init: function(  ) {
-		if ('serviceWorker' in navigator) {
-			window.addEventListener( 'load', function() {
-				navigator.serviceWorker.register('/?pwa_wp_plugin_sw=1').then( function ( registration  ) {
+	init : function () {
+		if ( 'serviceWorker' in navigator ) {
+			window.addEventListener( 'load', function () {
+				navigator.serviceWorker.register( '/?pwa_wp_plugin_sw=1' ).then( function ( registration ) {
 					console.log( 'Service worker registered' );
-				}).catch( function( registrationError ) {
+				} ).catch( function ( registrationError ) {
 					console.log( 'Service worker registration failed' );
-				});
-			});
+				} );
+			} );
 		}
 
 		// @todo Add to home screen using deferred event.
-		window.addEventListener('beforeinstallprompt', (e) => {
+		window.addEventListener( 'beforeinstallprompt', ( e ) => {
 			e.prompt();
 			e.userChoice
-				.then((choiceResult) => {
-					if ('accepted' === choiceResult.outcome) {
-						console.log('User accepted the A2HS prompt');
-					} else {
-						console.log('User dismissed the A2HS prompt');
-					}
+			.then( ( choiceResult ) => {
+				if ( 'accepted' === choiceResult.outcome ) {
+					console.log( 'User accepted the A2HS prompt' );
+				} else {
+					console.log( 'User dismissed the A2HS prompt' );
+				}
 				e = null;
-			});
-		});
+			} );
+		} );
 	}
 };
 
