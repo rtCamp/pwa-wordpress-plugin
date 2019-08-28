@@ -62,3 +62,7 @@ A `rel="manifest"` with link eg. `https://example.com/?pwa_wp_plugin_manifest=1`
 Icon will be fetch from site icon. Go to `Appearance > Customize > Site Identity > Site Icon` to setup icons.
 
 In Progress.
+
+#### Does this interest you?
+
+<a href="https://rtcamp.com/"><img src="https://rtcamp.com/wp-content/uploads/2019/04/github-banner@2x.png" alt="Join us at rtCamp, we specialize in providing high performance enterprise WordPress solutions"></a>
