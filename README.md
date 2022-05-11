@@ -1,7 +1,7 @@
 There is official PWA plugin released and maintained by Google. Please use this WordPress plugin instead - [https://wordpress.org/plugins/pwa/](https://wordpress.org/plugins/pwa/)
 
 <p align="center">
-<a href="https://rtcamp.com" target="_blank"><img width="200"src="https://rtcamp.com/wp-content/uploads/2018/04/rtcamp-logo-1.svg"></a>
+<a href="https://rtcamp.com" target="_blank"><img width="200"src="https://rtcamp.com/wp-content/uploads/sites/2/2020/11/site-logo-black.svg"></a>
 </p>
 
 # PWA WordPress Plugin
